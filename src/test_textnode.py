@@ -20,7 +20,7 @@ class TestTextNode(unittest.TestCase):
         self.assertNotEqual(node, node2)
     
     def test_NOT_eq_3(self):
-        node = TextNode("This is a text node", TextType.BOLD, "http://www.pornhub.com")
+        node = TextNode("This is a text node", TextType.BOLD, "http://www.youtube.com")
         node2 = TextNode("This is a text node", TextType.BOLD)
         self.assertNotEqual(node, node2)
     
