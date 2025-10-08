@@ -1,8 +1,8 @@
 import unittest
-
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from textnode import TextNode, TextType, text_node_to_html_node
 
-
+#Testing the regular HTML node
 class Test_HTML_Node(unittest.TestCase):
     def test_eq(self):
         html_node = HTMLNode("h1", "Hello to all!", None, {"href": "https://www.google.com", "target": "_blank",})
@@ -16,6 +16,7 @@ class Test_HTML_Node(unittest.TestCase):
         expected = "HTMLNode(h1, Hello to all!, None, {'href': 'https://www.google.com', 'target': '_blank'})"
         self.assertEqual(repr(html_node), expected)
 
+#Testing the leaf node
 class Test_HTML_Leaf_Node(unittest.TestCase):
     def test_leaf_to_html_p(self):
         node = LeafNode("p", "Hello, world!")
@@ -29,6 +30,7 @@ class Test_HTML_Leaf_Node(unittest.TestCase):
         node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         self.assertEqual(node.to_html(), '<a href="https://www.google.com">Click me!</a>')
 
+#Testing the parent node
 class Test_HTML_Parent_Node(unittest.TestCase):
     def test_to_html_with_children(self):
         child_node = LeafNode("span", "child")
@@ -99,5 +101,65 @@ class Test_HTML_Parent_Node(unittest.TestCase):
             "<h2><b>Bold text</b>Normal text<i>italic text</i>Normal text</h2>",
         )
 
+#Testing the Text node
+class Test_Text_Node_to_HTML_Node(unittest.TestCase):
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")
+    
+    def test_bold(self):
+        node = TextNode("This should be bold", TextType.BOLD)
+        html_node = text_node_to_html_node(node)
+        
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "This should be bold")
+        
+        self.assertEqual(html_node.to_html(), "<b>This should be bold</b>")
+
+    def test_italic(self):
+        node = TextNode("This should be italic", TextType.ITALIC)
+        html_node = text_node_to_html_node(node)
+        
+        self.assertEqual(html_node.tag, "i")
+        self.assertEqual(html_node.value, "This should be italic")
+        
+        self.assertEqual(html_node.to_html(), "<i>This should be italic</i>")
+    
+    def test_code(self):
+        node = TextNode("This should be code, lambda x: = ...", TextType.CODE)
+        html_node = text_node_to_html_node(node)
+
+        self.assertEqual(html_node.tag, "code")
+        self.assertEqual(html_node.value, "This should be code, lambda x: = ...")
+
+        self.assertEqual(html_node.to_html(), "<code>This should be code, lambda x: = ...</code>")
+    
+    def test_link(self):
+        node = TextNode("Hot single ladies in your area", TextType.LINK, "https://www.cornhub.com")
+        html_node = text_node_to_html_node(node)
+
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "Hot single ladies in your area")
+
+        self.assertEqual(html_node.to_html(), '<a href="https://www.cornhub.com">Hot single ladies in your area</a>')
+
+    def test_image(self):
+        node = TextNode("This is an image", TextType.IMAGE, "https://www.boot.dev")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "")
+        self.assertEqual(
+            html_node.props,
+            {"src": "https://www.boot.dev", "alt": "This is an image"},
+        )
+    def test_image_to_html(self):
+        node = TextNode("Logo", TextType.IMAGE, "https://www.boot.dev/logo.png")
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(
+            html_node.to_html(),
+            '<img src="https://www.boot.dev/logo.png" alt="Logo"></img>'
+        )
 if __name__ == "__main__":
     unittest.main()
