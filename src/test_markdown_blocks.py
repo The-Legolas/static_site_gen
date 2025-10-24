@@ -1,5 +1,10 @@
 import unittest
-from block_markdown import markdown_to_blocks, block_to_block_type, BlockType, markdown_to_html_node
+from block_markdown import (markdown_to_blocks, 
+                            block_to_block_type, 
+                            BlockType, 
+                            markdown_to_html_node,
+                            )
+from generating_content import extract_title
 
 
 class TestMarkdownToHTML(unittest.TestCase):
@@ -157,6 +162,25 @@ the **same** even with inline stuff
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
+    def test_title_extration(self):
+        md = """
+# Hello world
+
+How are you today
+"""
+        node = extract_title(md)
+        self.assertEqual(
+            node,
+            "Hello world"
+        )
+    def test_no_title__title_extration(self):
+        md = """
+### Hello world
+
+How are you today
+"""
+        with self.assertRaises(Exception):
+            extract_title(md)
 
 if __name__ == "__main__":
     unittest.main()

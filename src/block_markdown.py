@@ -1,7 +1,7 @@
 import re
 from enum import Enum
-from inline_markdown import text_to_Text_nodes, split_nodes_image, split_nodes_link
-from textnode import text_node_to_html_node, TextType, TextNode
+from inline_markdown import text_to_Text_nodes
+from textnode import text_node_to_html_node
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class BlockType(Enum):
@@ -125,10 +125,3 @@ def make_ordered_list(text: str) -> HTMLNode:
         line = line[len(f"{i}."):].strip()
         ol_node.append(ParentNode("li", text_to_children(line)))
     return ol_node
-
-
-
-
-#print(make_quote("> Hello\n> World"))
-#print(make_heading("### awj"))
-#print(make_qoute("```this is code, butthis is also code\n```"))
