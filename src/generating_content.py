@@ -68,9 +68,13 @@ def generate_page(from_path, template_path, dest_path, basepath, base_dir=None):
 
 def extract_title(markdown):
     md_str = markdown_to_blocks(markdown)
-    first_md_line = md_str[0]
+    if md_str:
+        first_md_line = md_str[0]
+    else:
+        return "untitled"
     if not first_md_line.startswith("# "):
         raise Exception(f"This is incorrect formating. {first_md_line} should start with a single '#' and a leading space")
     stripped_md_str = first_md_line.strip("# ")
     return stripped_md_str
 
+print(extract_title("11"))
